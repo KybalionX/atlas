@@ -1,0 +1,5 @@
+trigger CarFullPriceTrigger on carObject__c (before insert) {
+    for(carObject__c car : Trigger.New){
+        car.full_price__c = car.price__c + car.tax__c;       
+    } 
+}

@@ -1,0 +1,10 @@
+@RestResource(urlMapping='/api/leads/*')
+global class leadsApi {
+
+@HttpGet
+global static List<Lead> getLeads(){ 
+    List<Lead> leads = [SELECT Name from Lead];
+    return leads;
+}
+
+}

@@ -1,0 +1,35 @@
+@RestResource(urlMapping='/api/cars/*')
+global class carsApi {
+
+@HttpGet
+global static List<carObject__c> getCarsFromLead(){ 
+    String lead = RestContext.request.params.get('lead');
+    List<carObject__c> cars = [SELECT full_name__c, price__c, tax__c, full_price__c, lead__c from carObject__c where lead__c = :lead];
+    return cars;
+}
+    
+@HttpPost
+global static Map<String, String> addCar(){
+    Map<String, String> result = new Map<String, String>();
+    string down_payment = RestContext.request.params.get('down_payment');
+    string leasing = RestContext.request.params.get('leasing');
+    string model_year = RestContext.request.params.get('model_year');
+    string price = RestContext.request.params.get('price');
+    string registration_plate = RestContext.request.params.get('registration_plate');
+    string tax = RestContext.request.params.get('tax');
+    string idLead = RestContext.request.params.get('idLead');
+    try {
+        carObject__c car = new carObject__c(down_payment__c = Decimal.valueOf(down_payment), leasing__c = Decimal.valueOf(leasing), Model_Year__c = model_year, price__c = Decimal.valueOf(price), registration_plate__c = registration_plate, tax__c = Decimal.valueOf(tax), lead__c = idLead);
+        insert car;
+        result.put('status', '400');
+        result.put('message', 'Car was inserted');
+    } catch(DmlException e) {
+        System.debug('Error intentando agregar el coche: ' + e.getMessage());
+        result.put('status', '500');
+        result.put('message', 'ERROR: '+e.getMessage());
+    }
+
+    return result;
+}
+
+}
